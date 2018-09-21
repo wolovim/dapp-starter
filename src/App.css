@@ -1,0 +1,51 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  margin: 24px;
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.contract-text {
+  display: inline-block;
+  font-weight: bold;
+  padding: 8px 12px;
+  background-color: #eee;
+  margin-top: 12px;
+}
+
+.form-input {
+  display: block;
+  width: 224px;
+  padding: 6px;
+  margin: 12px auto;
+}
+
+.form-btn {
+  display: block;
+  width: 240px;
+  padding: 8px 12px;
+  margin: 12px auto;
+}
