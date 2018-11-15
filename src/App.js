@@ -1,23 +1,59 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
-import web3 from './web3';
-import './App.css';
+import Web3 from 'web3';
 import Contract from 'truffle-contract';
 import simpleContractJson from './contracts/SimpleContract.json';
+import AccountStatus from './AccountStatus';
+import './App.css';
 
 class App extends Component {
   constructor(props) {
     super(props);
 
+    this.web3 = '';
+
     this.state = {
+      activeAccount: '',
+      userRejectedWeb3: false,
       inputValue: '',
-      text: ''
+      text: '',
     };
   }
 
   componentDidMount() {
+    this.connectToWeb3();
     this.getContractText();
-    this.watchEvents();
+    // this.watchEvents();
+  }
+
+  connectToWeb3() {
+    if (window.ethereum) {
+      this.web3 = new Web3(window.ethereum);
+
+      // Enable full provider
+      window.ethereum.send('eth_requestAccounts')
+        .then(accounts => {
+          console.log('Approved accounts:', accounts)
+          this.setState({ activeAccount: accounts[0], userRejectedWeb3: false })
+        })
+        .catch(error => {
+          if (error.code === 4001) {
+            console.log('User denied connecting an account!');
+            this.setState({ userRejectedWeb3: true })
+          }
+        });
+
+      window.ethereum.on('accountsChanged', accounts => {
+        if (accounts.length) {
+          this.setState({ activeAccount: accounts[0], userRejectedWeb3: false });
+        } else {
+          this.setState({ activeAccount: '', userRejectedWeb3: true });
+        }
+      })
+    } else {
+      // Use local websocket provider
+      this.web3 = new Web3('ws://localhost:8545');
+    }
   }
 
   async watchEvents() {
@@ -34,7 +70,7 @@ class App extends Component {
 
   async getContractInstance() {
     const contract = Contract(simpleContractJson);
-    contract.setProvider(web3.currentProvider);
+    contract.setProvider(this.web3.currentProvider);
 
     // Hack for web3@1.0.0 support for localhost testrpc
     // https://github.com/trufflesuite/truffle-contract/issues/56#issuecomment-331084530
@@ -44,7 +80,7 @@ class App extends Component {
       };
     }
 
-    const accounts = await web3.eth.getAccounts();
+    const accounts = await this.web3.eth.getAccounts();
     contract.defaults({ from: accounts[0]  });
 
     return await contract.deployed();
@@ -70,6 +106,11 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">dapp-starter</h1>
         </header>
+
+        <AccountStatus
+          activeAccount={this.state.activeAccount}
+          userRejectedWeb3={this.state.userRejectedWeb3}
+        />
 
         <div className="App-intro">
           The value on the blockchain is:<br/>

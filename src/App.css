@@ -49,3 +49,27 @@
   padding: 8px 12px;
   margin: 12px auto;
 }
+
+.account-status {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  max-width: 320px;
+  padding: 20px;
+  margin: 20px;
+}
+
+.account-status--success {
+  background-color: #ABFEAD;
+  border: 2px solid #3CAD82;
+}
+
+.account-status--warning {
+  background-color: #FFBC92;
+  border: 2px solid #FF8C44;
+}
+
+.account-status--error {
+  background-color: #FDBABD;
+  border: 2px solid #BD373D;
+}
